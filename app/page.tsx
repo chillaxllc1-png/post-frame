@@ -1,7 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { enableDisplayOnce } from "./display/page";
+// app/page.tsx（先頭付近）
+import { allowCheckout } from "./_routeFlags";
+
+// 入力完了時に allowCheckout() を呼ぶ想定
+// （呼ぶ場所の実装は工程外）
 
 export default function Page(props: {
   originalText?: string;
@@ -29,8 +33,8 @@ export default function Page(props: {
   const router = useRouter();
 
   function handleDisplayExecute() {
-    enableDisplayOnce();
-    router.push("/display");
+    allowCheckout();
+    router.push("/checkout");
   }
 
   return (

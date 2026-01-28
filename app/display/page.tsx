@@ -1,19 +1,21 @@
 import { redirect } from "next/navigation";
+import { canGoDisplay, resetAll } from "../_routeFlags";
 
 /**
- * 表示実行フラグ（最小構造）
- * - メモリ上のみ
- * - 永続化しない
+ * /display への進入可否判定
+ * - 直接アクセス不可
+ * - リロード不可
+ * - 戻る操作不可
  */
-let canDisplayOnce = false;
-
-/**
- * 表示実行時に一度だけ true にされる想定
- * （この関数を呼ぶ場所の実装は工程外）
- */
-export function enableDisplayOnce() {
-    canDisplayOnce = true;
+if (!canGoDisplay) {
+    redirect("/");
 }
+
+/**
+ * 初回表示後は即無効化
+ * （再表示・再訪を防止）
+ */
+resetAll();
 
 export default function DisplayPage(props: {
     originalText?: string;
@@ -25,19 +27,6 @@ export default function DisplayPage(props: {
     gapBranch?: string;
     hasBreakerTag?: boolean;
 }) {
-    /**
-     * 直接アクセス／リロード／戻る操作
-     * すべて同一判定
-     */
-    if (!canDisplayOnce) {
-        redirect("/");
-    }
-
-    /**
-     * 初回表示後は即無効化
-     */
-    canDisplayOnce = false;
-
     const {
         originalText,
         sliceA,
