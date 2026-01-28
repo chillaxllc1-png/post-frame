@@ -1,22 +1,6 @@
 import { redirect } from "next/navigation";
 import { canGoDisplay, resetAll } from "../_routeFlags";
 
-/**
- * /display への進入可否判定
- * - 直接アクセス不可
- * - リロード不可
- * - 戻る操作不可
- */
-if (!canGoDisplay) {
-    redirect("/");
-}
-
-/**
- * 初回表示後は即無効化
- * （再表示・再訪を防止）
- */
-resetAll();
-
 export default function DisplayPage(props: {
     originalText?: string;
     sliceA?: string;
@@ -27,6 +11,14 @@ export default function DisplayPage(props: {
     gapBranch?: string;
     hasBreakerTag?: boolean;
 }) {
+    // 実行時のみ判定（ビルド時には走らない）
+    if (!canGoDisplay) {
+        redirect("/");
+    }
+
+    // 初回表示後は即無効化
+    resetAll();
+
     const {
         originalText,
         sliceA,
