@@ -1,65 +1,140 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useRouter } from "next/navigation";
+import { enableDisplayOnce } from "./display/page";
+
+export default function Page(props: {
+  originalText?: string;
+  sliceA?: string;
+  sliceB?: string;
+  sliceC?: string;
+  gapAxis?: string;
+  gapContext?: string;
+  gapBranch?: string;
+  hasBreakerTag?: boolean;
+  showPaymentGate?: boolean;
+}) {
+  const {
+    originalText,
+    sliceA,
+    sliceB,
+    sliceC,
+    gapAxis,
+    gapContext,
+    gapBranch,
+    hasBreakerTag,
+    showPaymentGate,
+  } = props;
+
+  const router = useRouter();
+
+  function handleDisplayExecute() {
+    enableDisplayOnce();
+    router.push("/display");
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <section data-section="input-target">
+        <header>
+          <h2>［入力された対象］</h2>
+        </header>
+
+        <p data-role="fixed-note">
+          ※ 以下は、観測対象として配置された原文です
+          （評価・判定・解釈は行いません）
+        </p>
+
+        <div data-role="original-content">
+          {originalText}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        {showPaymentGate && (
+          <section data-section="payment-gate">
+            <div data-role="payment-text">
+              この議論断面を
+              表示状態にします
+            </div>
+
+            <button
+              data-role="payment-action"
+              onClick={handleDisplayExecute}
+            >
+              ［300円で表示］
+            </button>
+          </section>
+        )}
+      </section>
+
+      <section data-section="discussion-slices">
+        <header>
+          <h2>［観測された議論断面］</h2>
+        </header>
+
+        {sliceA && (
+          <div data-slice="A">
+            <h3>断面A</h3>
+            <div data-role="slice-content">{sliceA}</div>
+          </div>
+        )}
+
+        {sliceB && (
+          <div data-slice="B">
+            <h3>断面B</h3>
+            <div data-role="slice-content">{sliceB}</div>
+          </div>
+        )}
+
+        {sliceC && (
+          <div data-slice="C">
+            <h3>断面C</h3>
+            <div data-role="slice-content">{sliceC}</div>
+          </div>
+        )}
+      </section>
+
+      <section data-section="gap-points">
+        <header>
+          <h2>［ズレ発生ポイント］</h2>
+        </header>
+
+        <ul>
+          {gapAxis && (
+            <li data-gap="axis">
+              <span>観測軸</span>
+              <div data-role="gap-content">{gapAxis}</div>
+            </li>
+          )}
+
+          {gapContext && (
+            <li data-gap="context">
+              <span>前提文脈</span>
+              <div data-role="gap-content">{gapContext}</div>
+            </li>
+          )}
+
+          {gapBranch && (
+            <li data-gap="branch">
+              <span>解釈が分岐した位置</span>
+              <div data-role="gap-content">{gapBranch}</div>
+            </li>
+          )}
+        </ul>
+      </section>
+
+      <section data-section="structure-tags">
+        <header>
+          <h2>［構造タグ］</h2>
+        </header>
+
+        <ul>
+          {hasBreakerTag && (
+            <li data-tag="breaker-check">
+              ◻ ブレーカーチェック対象
+            </li>
+          )}
+        </ul>
+      </section>
+    </main>
   );
 }
